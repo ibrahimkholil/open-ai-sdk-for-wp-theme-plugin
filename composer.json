@@ -1,0 +1,13 @@
+{
+  "name": "ik/openai-php-sdk",
+  "description": "A PHP SDK for OpenAI API for WordPress",
+  "type": "library",
+  "require": {
+    "guzzlehttp/guzzle": "^7.9"
+  },
+  "autoload": {
+    "psr-4": {
+      "OpenAI\\": "src/"
+    }
+  }
+}
