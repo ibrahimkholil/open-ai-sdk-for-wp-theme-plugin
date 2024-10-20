@@ -1,134 +1,100 @@
-# OpenAI PHP SDK for WordPress
 
-## Overview
+# OpenAI SDK for WordPress
 
-The OpenAI PHP SDK allows developers to easily integrate OpenAI's API into their WordPress themes and plugins. This SDK simplifies the process of making API calls, handling responses, and managing errors.
+This is an OpenAI SDK for WordPress themes and plugins, allowing developers to integrate OpenAI's powerful GPT models into their WordPress site. This SDK provides a shortcode for generating AI content, as well as tools for handling API requests and managing costs.
+
+## Features
+
+- **Cost management**: Track API usage and manage costs using built-in utilities.
+- **Error handling**: The SDK includes custom error handling for OpenAI API errors.
+## Requirements
+
+- PHP 7.4+
+- WordPress 5.5+
+- OpenAI API Key (obtainable from the [OpenAI website](https://beta.openai.com/signup/))
+- Composer (for dependency management)
+- Guzzle HTTP client (installed via Composer)
 
 ## Installation
 
-1. **Download the SDK**: Clone or download the repository.
-2. **Include the SDK in your Plugin or Theme**:
-   - Place the `openai-php-sdk` directory in your theme or plugin directory.
+1. **Download the SDK**:
+   -Clone or download the SDK repository into your WordPress `wp-content/plugins` or `wp-content/themes` directory.
 
-3. **Autoload Classes**:
-   - In your main plugin file or theme's `functions.php`, include the SDK classes:
-   ```php
-   require_once 'path/to/openai-php-sdk/src/OpenAIClient.php';
-   require_once 'path/to/openai-php-sdk/src/OpenAIConfig.php';
-   require_once 'path/to/openai-php-sdk/src/OpenAIException.php';
+2. **Copy** `OpenAI` **folder and past it to your theme or plugin folder**:
+3. **Create a <code>composer.json</code> File** : 
 
-
-## Example
-Here’s a basic example of how to use the OpenAI SDK in your theme or plugin:
-
-```php
-add_action('init', function () {
-    try {
-        // Replace 'YOUR_API_KEY' with your actual API key
-        $apiKey = 'YOUR_API_KEY';
-
-        if (empty($apiKey)) {
-            error_log('OpenAI Error: API key is not set.');
-            return;
-        }
-
-        $config = new OpenAI\OpenAIConfig($apiKey);
-        $client = new OpenAI\OpenAIClient($config);
-
-        // Prepare a message to send to OpenAI
-        $messages = [
-            ['role' => 'user', 'content' => 'Hello, OpenAI!']
-        ];
-
-        // Make the API call
-        $response = $client->chat('gpt-3.5-turbo', $messages, 50);
-
-        // Log the response
-        error_log('OpenAI Response: ' . print_r($response, true));
-
-        // Handle cost management
-        $client->checkCost($response['usage']);
-        
-    } catch (OpenAI\OpenAIException $e) {
-        // Handle errors from the API
-        error_log('OpenAI Error: ' . $e->getMessage());
-    }
-}); 
+```bash
+composer init
 ```
+When prompted, provide details for your project (such as name, description, etc.), or just hit enter to use the default values. When asked for the dependencies, you can leave it empty and move forward.
+4. **Require Guzzle:**
+Now that you have a <code>composer.json</code> file, you can add Guzzle as a dependency by running the following command:
+```bash
+composer require guzzlehttp/guzzle
+```
+5. **Install Dependencies:**
+After requiring Guzzle, Composer will automatically create the necessary <code>composer.json</code> and <code>composer.lock</code> files. Now, run:
+```bash
+composer install
+```
+6. **Include Composer Autoloader:**
+
+In your theme’s functions.php file or your plugin’s main file, include the Composer autoloader so WordPress can load the SDK and its dependencies:
+```bash
+require_once __DIR__ . '/vendor/autoload.php';
+```
+
+`## Usage`
+
+1. **Programmatic API Usage**:
+   Developers can use the SDK programmatically by creating instances of the SDK's classes.
+
+   Example:
+
+   ```php
+   use OpenAI\OpenAIClient;
+   use OpenAI\OpenAIConfig;
+
+   $config = new OpenAIConfig('your-api-key');
+   $client = new OpenAIClient($config);
+   
+   $messages = [
+       ['role' => 'user', 'content' => 'Write an article about WordPress development.']
+   ];
+
+   $response = $client->chat('gpt-4', $messages, 150);
+   echo $response['choices'][0]['message']['content'];
+   ```
 
 ## Error Handling
-The SDK automatically handles errors that may occur during the API call. Here’s how to catch exceptions and log them properly:
 
-##Example of Error Handling
+The SDK throws custom exceptions for API errors. You can catch and handle them like this:
+
 ```php
 try {
-// Code to call OpenAI API
+    $response = $client->chat('gpt-4', $messages, 150);
 } catch (OpenAI\OpenAIException $e) {
-// Log the error message for debugging
-error_log('OpenAI Error: ' . $e->getMessage());
-
-    // Optionally, display a user-friendly message or take other actions
-    // echo 'There was an error communicating with the AI service. Please try again later.';
+    echo 'OpenAI Error: ' . $e->getMessage();
 }
 ```
-## Error Responses
-When an error occurs, the OpenAIException will provide details about the issue. You can customize how you handle these errors based on your application's needs.
 
-##Cost Management
-To implement cost management, you can check the usage returned by the API response and log any costs that exceed your budget.
+## Cost Management
 
-##Example of Cost Management
-```php
-public function checkCost($usage) {
-    // Example logic: Log usage or notify if exceeding budget
-    if (isset($usage['total_cost'])) {
-        // Check if the total cost exceeds a defined threshold
-        if ($usage['total_cost'] > 100) {
-            // Log or alert the user
-            error_log("Cost exceeded: " . $usage['total_cost']);
-        }
-    }
-}
+The SDK includes a basic cost management tool that tracks token usage from OpenAI API responses. You can configure custom alerts or track usage based on thresholds.
 
+## Tests
+
+Unit tests are included using PHPUnit. To run tests, simply run:
+
+```bash
+composer install
+./vendor/bin/phpunit --testdox
 ```
-## Implementing Cost Checks
-Call the checkCost method after receiving a response from the OpenAI API. This allows you to track and manage your spending effectively.
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
 
 ## License
-This SDK is open-source and available under the MIT License.
 
-## Support
-
-### Additional Instructions
-
-1. **Install Dependencies**:
-   After creating your files, run the following command in your terminal from the root of your SDK directory to install dependencies:
-   ```bash
-   composer install
-
-### Key Additions
-
-1. **Error Handling Section**: This section explains how to catch exceptions, log error messages, and handle errors gracefully. It provides an example of how to implement this in practice.
-
-2. **Cost Management Section**: This outlines how to monitor costs based on the API usage returned in responses. It includes a sample function that checks if the total cost exceeds a specified threshold and logs the cost.
-
-3. **Practical Examples**: Examples are provided for error handling and cost management to clarify how to implement these features in a WordPress context.
-
-### Final Steps
-
-1. **Update Your Files**: Make sure to replace the `README.md` in your project with the updated content.
-2. **Test the Implementation**: Ensure that the examples work as intended within your WordPress environment.
-3. **Distribute the SDK**: Once everything is tested and confirmed to work, you can distribute the SDK to others, knowing that they have clear guidance on how to use it effectively.
-
-If you have further adjustments or additions you'd like to make, feel free to ask!
-
-## Use the SDK in Your Plugin or Theme:
-
-Follow the usage examples in the README to integrate OpenAI functionality into your WordPress project.
-## Testing:
-
-You can add tests using PHPUnit by creating a tests directory and adding your test cases there.
-## Deployment:
-
-Make sure to keep your API keys secure and not expose them publicly.
-Feel free to modify the content to suit your specific requirements or preferences! If you need further customization or additional features, just let me know!
+This project is licensed under the MIT License.
