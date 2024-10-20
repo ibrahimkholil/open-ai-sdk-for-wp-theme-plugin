@@ -27,7 +27,9 @@ This is an OpenAI SDK for WordPress themes and plugins, allowing developers to i
 composer init
 ```
 When prompted, provide details for your project (such as name, description, etc.), or just hit enter to use the default values. When asked for the dependencies, you can leave it empty and move forward.
-4. **Require Guzzle:**
+
+4. **Require Guzzle**:
+
 Now that you have a <code>composer.json</code> file, you can add Guzzle as a dependency by running the following command:
 ```bash
 composer require guzzlehttp/guzzle
