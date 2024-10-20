@@ -1,0 +1,1 @@
+# open-ai-sdk-for-wp-theme-plugin
