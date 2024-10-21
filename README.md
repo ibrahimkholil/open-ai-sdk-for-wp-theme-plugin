@@ -7,6 +7,7 @@ This is an OpenAI SDK for WordPress themes and plugins, allowing developers to i
 
 - **Cost management**: Track API usage and manage costs using built-in utilities.
 - **Error handling**: The SDK includes custom error handling for OpenAI API errors.
+-  **API VALIDATE**: you can validate your api by check the <code>example-api-test.php</code>
 ## Requirements
 
 - PHP 7.4+
@@ -20,7 +21,7 @@ This is an OpenAI SDK for WordPress themes and plugins, allowing developers to i
 1. **Download the SDK**:
    -Clone or download the SDK repository into your WordPress `wp-content/plugins` or `wp-content/themes` directory.
 
-2. **Copy** `OpenAI` **folder and past it to your theme or plugin folder**:
+2. **Copy** `api` **folder and past it to your theme or plugin folder or you can use it also you need to update the folder name to <code>composer.json</code>**:
 3. **Create a <code>composer.json</code> File** : 
 
 ```bash
@@ -64,7 +65,7 @@ require_once __DIR__ . '/vendor/autoload.php';
        ['role' => 'user', 'content' => 'Write an article about WordPress development.']
    ];
 
-   $response = $client->chat('gpt-4', $messages, 150);
+   $response = $client->chat('gpt-4o', $messages, 150);
    echo $response['choices'][0]['message']['content'];
    ```
 
@@ -74,7 +75,7 @@ The SDK throws custom exceptions for API errors. You can catch and handle them l
 
 ```php
 try {
-    $response = $client->chat('gpt-4', $messages, 150);
+    $response = $client->chat('gpt-4o', $messages, 150);
 } catch (OpenAI\OpenAIException $e) {
     echo 'OpenAI Error: ' . $e->getMessage();
 }
